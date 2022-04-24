@@ -1,0 +1,20 @@
+version: '3.8'
+
+networks:
+    pcdigascraper-network:
+
+services:
+    db:
+        image: mongo:4.2.0
+        container_name: pcdigascraper
+        networks:
+            default:
+            pcdigascraper-network:
+        volumes:
+            - mongo-pcdigascraper:/data/db
+        ports:
+            - 27017:27017
+        restart: unless-stopped
+
+volumes:
+    mongo-pcdigascraper:
