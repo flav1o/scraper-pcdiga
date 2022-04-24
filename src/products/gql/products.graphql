@@ -1,0 +1,39 @@
+type Product {
+  _id: ID!
+  ean: String!
+  name: String!
+  url: String!
+  prices: [ProductPrice]
+}
+
+type ProductPrice {
+  _id: ID!
+  currentPrice: Int
+  originalPrice: Int
+  priceDifference: Int
+  isOnDiscount: Boolean
+  discountPercentage: Int
+}
+
+input CreateProductInput {
+  ean: String!
+  name: String!
+  url: String!
+}
+
+input UpdateProductInput {
+  name: String
+  url: String
+}
+
+input CreateProductPriceInput {
+  currentPrice: Int
+  originalPrice: Int
+  priceDifference: Int
+  isOnDiscount: Boolean
+  discountPercentage: Int
+}
+
+type Query {
+  getProduct(url: String, ean: String): Product!
+}

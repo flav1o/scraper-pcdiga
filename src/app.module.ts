@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AppService } from './app.service';
         },
       },
     }),
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
