@@ -19,11 +19,11 @@ export interface UpdateProductInput {
 }
 
 export interface CreateProductPriceInput {
-    currentPrice?: Nullable<number>;
-    originalPrice?: Nullable<number>;
-    priceDifference?: Nullable<number>;
+    currentPrice: number;
+    originalPrice: number;
+    priceDifference: number;
     isOnDiscount?: Nullable<boolean>;
-    discountPercentage?: Nullable<number>;
+    discountPercentage: number;
 }
 
 export interface Product {
@@ -36,15 +36,15 @@ export interface Product {
 
 export interface ProductPrice {
     _id: string;
-    currentPrice?: Nullable<number>;
-    originalPrice?: Nullable<number>;
-    priceDifference?: Nullable<number>;
+    currentPrice: number;
+    originalPrice: number;
+    priceDifference: number;
     isOnDiscount?: Nullable<boolean>;
-    discountPercentage?: Nullable<number>;
+    discountPercentage: number;
 }
 
 export interface IQuery {
-    getProduct(url?: Nullable<string>, ean?: Nullable<string>): Product | Promise<Product>;
+    getProduct(url: string): Product | Promise<Product>;
 }
 
 type Nullable<T> = T | null;

@@ -47,10 +47,4 @@ export abstract class IQuery {
     abstract getProduct(url?: Nullable<string>, ean?: Nullable<string>): Product | Promise<Product>;
 }
 
-export abstract class IMutation {
-    abstract createProduct(input: CreateProductInput): Product | Promise<Product>;
-
-    abstract updateProduct(ean: string, input?: Nullable<UpdateProductInput>): Product | Promise<Product>;
-}
-
 type Nullable<T> = T | null;

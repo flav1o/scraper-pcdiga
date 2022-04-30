@@ -1,11 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  CreateProductInput,
-  Product,
-  UpdateProductInput,
-} from 'src/graphql/graphql-schema';
+import { Product } from 'src/graphql/graphql-schema';
+import { ScraperService } from 'src/scraper/scraper.service';
 import { ENTITIES_KEY } from 'src/shared';
 
 @Injectable()
@@ -13,46 +10,39 @@ export class ProductsService {
   constructor(
     @InjectModel(ENTITIES_KEY.PRODUCTS_MODEL)
     private productModel: Model<Product>,
+    private scraperService: ScraperService,
   ) {}
 
-  async createProduct(input: CreateProductInput): Promise<Product> {
-    const newProduct = new this.productModel({ ...input });
+  async createProduct(productUrl: string): Promise<Product> {
+    const { currentPrice, originalPrice, priceDifference, name, ean } =
+      await this.scraperService.pageScraping(productUrl);
 
-    return await newProduct.save();
-  }
-
-  async getProduct(ean?: string, url?: string): Promise<Product> {
-    if (ean) return await this.productModel.findOne({ ean });
-    if (url) return await this.productModel.findOne({ url });
-
-    throw new HttpException(
-      'PRODUCT.PRODUCT_DOES_NOT_EXIST',
-      HttpStatus.NOT_FOUND,
-    );
-  }
-
-  async updateProduct(
-    ean: string,
-    input: UpdateProductInput,
-  ): Promise<Product> {
-    const problem = await this.productModel.findOneAndUpdate(
-      {
-        ean,
-      },
-      {
-        $set: {
-          ...input,
-        },
-      },
-      { new: true },
-    );
-
-    if (!problem)
+    if (!currentPrice)
       throw new HttpException(
-        'PROBLEM.PROBLEM_DOESNT_EXIST',
+        'ERROR.COULDNT_CREATE_PRODUCT',
         HttpStatus.NOT_FOUND,
       );
 
-    return problem;
+    return await new this.productModel({
+      url: productUrl,
+      name,
+      ean,
+      prices: {
+        currentPrice,
+        originalPrice,
+        priceDifference,
+        isOnDiscount: priceDifference > 0,
+        discountPercentage: ((priceDifference / originalPrice) * 100).toFixed(
+          2,
+        ),
+      },
+    }).save();
+  }
+
+  async getProduct(url: string): Promise<Product> {
+    const product = await this.productModel.findOne({ url }).lean();
+
+    if (product) return product;
+    return await this.createProduct(url);
   }
 }

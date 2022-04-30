@@ -8,11 +8,11 @@ type Product {
 
 type ProductPrice {
   _id: ID!
-  currentPrice: Int
-  originalPrice: Int
-  priceDifference: Int
+  currentPrice: Float!
+  originalPrice: Float!
+  priceDifference: Float!
   isOnDiscount: Boolean
-  discountPercentage: Int
+  discountPercentage: Float!
 }
 
 input CreateProductInput {
@@ -27,13 +27,13 @@ input UpdateProductInput {
 }
 
 input CreateProductPriceInput {
-  currentPrice: Int
-  originalPrice: Int
-  priceDifference: Int
+  currentPrice: Float!
+  originalPrice: Float!
+  priceDifference: Float!
   isOnDiscount: Boolean
-  discountPercentage: Int
+  discountPercentage: Float!
 }
 
 type Query {
-  getProduct(url: String, ean: String): Product!
+  getProduct(url: String!): Product!
 }
