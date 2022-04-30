@@ -39,10 +39,47 @@ export class ProductsService {
     }).save();
   }
 
+  async getPrices(productUrl: string): Promise<Product> {
+    const { currentPrice, originalPrice, priceDifference } =
+      await this.scraperService.pageScraping(productUrl);
+
+    if (!currentPrice)
+      throw new HttpException(
+        'ERROR.COULDNT_CREATE_PRODUCT',
+        HttpStatus.NOT_FOUND,
+      );
+
+    const product = await this.productModel.findOneAndUpdate(
+      { url: productUrl },
+      {
+        $push: {
+          prices: {
+            currentPrice,
+            originalPrice,
+            priceDifference,
+            isOnDiscount: priceDifference > 0,
+            discountPercentage: (
+              (priceDifference / originalPrice) *
+              100
+            ).toFixed(2),
+          },
+        },
+      },
+    );
+
+    return product;
+  }
+
   async getProduct(url: string): Promise<Product> {
     const product = await this.productModel.findOne({ url }).lean();
 
-    if (product) return product;
-    return await this.createProduct(url);
+    if (!product) return await this.createProduct(url);
+
+    //TODO: make this an util function
+    const date = new Date(product.updatedAt);
+    const lastScrapedWas24Plus = date.getTime() < Date.now() - 86400000;
+
+    if (product && !lastScrapedWas24Plus) return product;
+    if (product && lastScrapedWas24Plus) return this.getPrices(url);
   }
 }

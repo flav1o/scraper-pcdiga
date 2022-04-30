@@ -32,6 +32,8 @@ export interface Product {
     name: string;
     url: string;
     prices?: Nullable<Nullable<ProductPrice>[]>;
+    updatedAt: string;
+    createdAt: string;
 }
 
 export interface ProductPrice {
@@ -41,6 +43,8 @@ export interface ProductPrice {
     priceDifference: number;
     isOnDiscount?: Nullable<boolean>;
     discountPercentage: number;
+    updatedAt: string;
+    createdAt: string;
 }
 
 export interface IQuery {

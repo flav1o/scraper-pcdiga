@@ -4,6 +4,8 @@ type Product {
   name: String!
   url: String!
   prices: [ProductPrice]
+  updatedAt: String!
+  createdAt: String!
 }
 
 type ProductPrice {
@@ -13,6 +15,8 @@ type ProductPrice {
   priceDifference: Float!
   isOnDiscount: Boolean
   discountPercentage: Float!
+  updatedAt: String!
+  createdAt: String!
 }
 
 input CreateProductInput {

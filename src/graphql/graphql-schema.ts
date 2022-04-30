@@ -19,11 +19,11 @@ export class UpdateProductInput {
 }
 
 export class CreateProductPriceInput {
-    currentPrice?: Nullable<number>;
-    originalPrice?: Nullable<number>;
-    priceDifference?: Nullable<number>;
+    currentPrice: number;
+    originalPrice: number;
+    priceDifference: number;
     isOnDiscount?: Nullable<boolean>;
-    discountPercentage?: Nullable<number>;
+    discountPercentage: number;
 }
 
 export class Product {
@@ -32,19 +32,23 @@ export class Product {
     name: string;
     url: string;
     prices?: Nullable<Nullable<ProductPrice>[]>;
+    updatedAt: string;
+    createdAt: string;
 }
 
 export class ProductPrice {
     _id: string;
-    currentPrice?: Nullable<number>;
-    originalPrice?: Nullable<number>;
-    priceDifference?: Nullable<number>;
+    currentPrice: number;
+    originalPrice: number;
+    priceDifference: number;
     isOnDiscount?: Nullable<boolean>;
-    discountPercentage?: Nullable<number>;
+    discountPercentage: number;
+    updatedAt: string;
+    createdAt: string;
 }
 
 export abstract class IQuery {
-    abstract getProduct(url?: Nullable<string>, ean?: Nullable<string>): Product | Promise<Product>;
+    abstract getProduct(url: string): Product | Promise<Product>;
 }
 
 type Nullable<T> = T | null;
