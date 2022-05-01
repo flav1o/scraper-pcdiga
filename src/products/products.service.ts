@@ -1,6 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import {
+  calculateDiscountPercentage,
+  isOlderThan24Hours,
+} from 'src/common/utils';
 import { Product } from 'src/graphql/graphql-schema';
 import { ScraperService } from 'src/scraper/scraper.service';
 import { ENTITIES_KEY } from 'src/shared';
@@ -58,10 +62,10 @@ export class ProductsService {
             originalPrice,
             priceDifference,
             isOnDiscount: priceDifference > 0,
-            discountPercentage: (
-              (priceDifference / originalPrice) *
-              100
-            ).toFixed(2),
+            discountPercentage: calculateDiscountPercentage(
+              priceDifference,
+              originalPrice,
+            ),
           },
         },
       },
@@ -75,11 +79,8 @@ export class ProductsService {
 
     if (!product) return await this.createProduct(url);
 
-    //TODO: make this an util function
-    const date = new Date(product.updatedAt);
-    const lastScrapedWas24Plus = date.getTime() < Date.now() - 86400000;
-
-    if (product && !lastScrapedWas24Plus) return product;
-    if (product && lastScrapedWas24Plus) return this.getPrices(url);
+    if (product && !isOlderThan24Hours(product.updatedAt)) return product;
+    if (product && isOlderThan24Hours(product.updatedAt))
+      return this.getPrices(url);
   }
 }

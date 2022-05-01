@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
+import { transformPricesToNumber } from 'src/common/utils';
 
 @Injectable()
 export class ScraperService {
@@ -31,31 +32,23 @@ export class ScraperService {
         '#maincontent > div.columns > div > div.product.attribute-header > div.product.attribute-wrapper > div.product.attribute.ean > div',
       );
 
-      //TODO: refactor the return with an util function
       return {
-        currentPrice: currentPrice
-          ? +currentPrice.innerText
-              .replace(/(\d+),(\d+).*/, '$1.$2')
-              .replace(/[^0-9.]/g, '')
-          : null,
+        currentPrice: currentPrice ? currentPrice.innerText : null,
         originalPrice: originalPrice
-          ? +originalPrice.innerText
-              .replace(/(\d+),(\d+).*/, '$1.$2')
-              .replace(/[^0-9.]/g, '')
-          : +currentPrice.innerText
-              .replace(/(\d+),(\d+).*/, '$1.$2')
-              .replace(/[^0-9.]/g, ''),
-        priceDifference: priceDifference
-          ? +priceDifference.innerText
-              .replace(/(\d+),(\d+).*/, '$1.$2')
-              .replace(/[^0-9.]/g, '')
-          : 0,
+          ? originalPrice.innerText
+          : currentPrice.innerText,
+        priceDifference: priceDifference ? priceDifference.innerText : '0',
         name: name.innerText,
         ean: ean.innerText,
       };
     });
 
     await browser.close();
-    return data;
+    return {
+      ...data,
+      currentPrice: transformPricesToNumber(data.currentPrice),
+      originalPrice: transformPricesToNumber(data.originalPrice),
+      priceDifference: transformPricesToNumber(data.priceDifference),
+    };
   }
 }
