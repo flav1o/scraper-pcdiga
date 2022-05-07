@@ -48,7 +48,7 @@ export interface ProductPrice {
 }
 
 export interface IQuery {
-    getProduct(url: string): Product | Promise<Product>;
+    getProduct(url: string, priceDate?: Nullable<string>): Product | Promise<Product>;
 }
 
 type Nullable<T> = T | null;

@@ -7,7 +7,10 @@ export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
   @Query('getProduct')
-  async getProblem(@Args('url') url: string): Promise<Product> {
-    return this.productsService.getProduct(url);
+  async getProblem(
+    @Args('url') url: string,
+    @Args('priceDate') date?: string,
+  ): Promise<Product> {
+    return this.productsService.getProduct(url, date);
   }
 }

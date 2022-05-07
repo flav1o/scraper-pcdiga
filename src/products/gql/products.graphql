@@ -39,5 +39,5 @@ input CreateProductPriceInput {
 }
 
 type Query {
-  getProduct(url: String!): Product!
+  getProduct(url: String!, priceDate: String): Product!
 }

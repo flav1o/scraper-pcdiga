@@ -1,14 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConsoleLogger,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   calculateDiscountPercentage,
+  isCurrentMonthAndYear,
   isOlderThan24Hours,
 } from 'src/common/utils';
 import { Product } from 'src/graphql/graphql-schema';
 import { ScraperService } from 'src/scraper/scraper.service';
 import { ENTITIES_KEY } from 'src/shared';
-
+import * as _ from 'lodash';
 @Injectable()
 export class ProductsService {
   constructor(
@@ -74,13 +80,61 @@ export class ProductsService {
     return product;
   }
 
-  async getProduct(url: string): Promise<Product> {
-    const product = await this.productModel.findOne({ url }).lean();
+  async getProduct(url: string, date: string): Promise<Product> {
+    let priceDate;
 
-    if (!product) return await this.createProduct(url);
+    date ? (priceDate = new Date(date)) : (priceDate = new Date());
 
-    if (product && !isOlderThan24Hours(product.updatedAt)) return product;
-    if (product && isOlderThan24Hours(product.updatedAt))
-      return this.getPrices(url);
+    const product = await this.productModel
+      .aggregate([
+        {
+          $match: {
+            url,
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            url: 1,
+            name: 1,
+            ean: 1,
+            updatedAt: 1,
+            prices: {
+              $filter: {
+                input: '$prices',
+                as: 'price',
+                cond: {
+                  $and: [
+                    {
+                      $eq: [
+                        { $month: '$$price.createdAt' },
+                        priceDate.getMonth() + 1,
+                      ],
+                    },
+                    {
+                      $eq: [
+                        { $year: '$$price.createdAt' },
+                        priceDate.getFullYear(),
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      ])
+      .exec();
+
+    if (product.length === 0) return await this.createProduct(url);
+
+    if (
+      isOlderThan24Hours(_.head(product).updatedAt) &&
+      isCurrentMonthAndYear(priceDate)
+    ) {
+      return await this.getPrices(url);
+    }
+
+    return _.head(product);
   }
 }
