@@ -1,0 +1,9 @@
+type ProductAutoSearch {
+  isActive: Boolean!
+  url: String!
+  hash: String!
+}
+
+type Mutation {
+  addProductToAutoSearch(url: String!): Boolean!
+}

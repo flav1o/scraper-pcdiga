@@ -28,6 +28,8 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/schedule": "^1.1.0",
+    "@types/cron": "^1.7.3",
     "apollo-server-express": "^3.6.7",
     "graphql": "^16.3.0",
     "graphql-tools": "^8.2.5",

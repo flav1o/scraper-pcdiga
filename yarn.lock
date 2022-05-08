@@ -720,7 +720,7 @@
     "webpack" "5.71.0"
     "webpack-node-externals" "3.0.0"
 
-"@nestjs/common@^6", "@nestjs/common@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.8 || ^8.0.0", "@nestjs/common@^8.0.0", "@nestjs/common@^8.2.3":
+"@nestjs/common@^6", "@nestjs/common@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/common@^6.10.11 || ^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.8 || ^8.0.0", "@nestjs/common@^8.0.0", "@nestjs/common@^8.2.3":
   "integrity" "sha512-QHi7QcgH/5Jinz+SCfIZJkFHc6Cch1YsAEGFEhi6wSp6MILb0sJMQ1CX06e9tCOAjSlBwaJj4PH0eFCVau5v9Q=="
   "resolved" "https://registry.npmjs.org/@nestjs/common/-/common-8.4.4.tgz"
   "version" "8.4.4"
@@ -730,7 +730,7 @@
     "tslib" "2.3.1"
     "uuid" "8.3.2"
 
-"@nestjs/core@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/core@^8.0.0", "@nestjs/core@^8.2.3":
+"@nestjs/core@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/core@^7.0.0 || ^8.0.0", "@nestjs/core@^8.0.0", "@nestjs/core@^8.2.3":
   "integrity" "sha512-Ef3yJPuzAttpNfehnGqIV5kHIL9SHptB5F4ERxoU7pT61H3xiYpZw6hSjx68cJO7cc6rm7/N+b4zeuJvFHtvBg=="
   "resolved" "https://registry.npmjs.org/@nestjs/core/-/core-8.4.4.tgz"
   "version" "8.4.4"
@@ -783,6 +783,14 @@
     "express" "4.17.3"
     "multer" "1.4.4"
     "tslib" "2.3.1"
+
+"@nestjs/schedule@^1.1.0":
+  "integrity" "sha512-0QpbwClUildXqlyoaygG+aIQZNNMv31XDyQxX+Ob1zw/3I8+AVrDlBwZHQ+tlhIcJFR8aG+VTH8xwIjXwtS1UA=="
+  "resolved" "https://registry.npmjs.org/@nestjs/schedule/-/schedule-1.1.0.tgz"
+  "version" "1.1.0"
+  dependencies:
+    "cron" "1.8.2"
+    "uuid" "8.3.2"
 
 "@nestjs/schematics@^8.0.0", "@nestjs/schematics@^8.0.3":
   "integrity" "sha512-gQq/8TYjtgum+5+QuPfHHKgKxDgNLGh8mH+EJ1skOKX+GTxgt5jmg1GFmwEfiOXZUcF9thT6GsOVNKWrdO3YMg=="
@@ -1013,6 +1021,14 @@
   "integrity" "sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw=="
   "resolved" "https://registry.npmjs.org/@types/cors/-/cors-2.8.12.tgz"
   "version" "2.8.12"
+
+"@types/cron@^1.7.3":
+  "integrity" "sha512-iPmUXyIJG1Js+ldPYhOQcYU3kCAQ2FWrSkm1FJPoii2eYSn6wEW6onPukNTT0bfiflexNSRPl6KWmAIqS+36YA=="
+  "resolved" "https://registry.npmjs.org/@types/cron/-/cron-1.7.3.tgz"
+  "version" "1.7.3"
+  dependencies:
+    "@types/node" "*"
+    "moment" ">=2.14.0"
 
 "@types/debug@^4.1.0":
   "integrity" "sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg=="
@@ -2440,6 +2456,13 @@
   "integrity" "sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ=="
   "resolved" "https://registry.npmjs.org/create-require/-/create-require-1.1.1.tgz"
   "version" "1.1.1"
+
+"cron@1.8.2":
+  "integrity" "sha512-Gk2c4y6xKEO8FSAUTklqtfSr7oTq0CiPQeLBG5Fl0qoXpZyMcj1SG59YL+hqq04bu6/IuEA7lMkYDAplQNKkyg=="
+  "resolved" "https://registry.npmjs.org/cron/-/cron-1.8.2.tgz"
+  "version" "1.8.2"
+  dependencies:
+    "moment-timezone" "^0.5.x"
 
 "cross-fetch@3.1.5":
   "integrity" "sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw=="
@@ -4808,6 +4831,18 @@
   "integrity" "sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw=="
   "resolved" "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   "version" "1.0.4"
+
+"moment-timezone@^0.5.x":
+  "integrity" "sha512-3zAEHh2hKUs3EXLESx/wsgw6IQdusOT8Bxm3D9UrHPQR7zlMmzwybC8zHEM1tQ4LJwP7fcxrWr8tuBg05fFCbg=="
+  "resolved" "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.34.tgz"
+  "version" "0.5.34"
+  dependencies:
+    "moment" ">= 2.9.0"
+
+"moment@>= 2.9.0", "moment@>=2.14.0":
+  "integrity" "sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.3.tgz"
+  "version" "2.29.3"
 
 "mongodb@3.7.3":
   "integrity" "sha512-Psm+g3/wHXhjBEktkxXsFMZvd3nemI0r3IPsE0bU+4//PnvNWKkzhZcEsbPcYiWqe8XqXJJEg4Tgtr7Raw67Yw=="

@@ -7,6 +7,8 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
+import { AutosearchModule } from './autosearch/autosearch.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { ProductsModule } from './products/products.module';
     }),
     ProductsModule,
     NestCrawlerModule,
+    AutosearchModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

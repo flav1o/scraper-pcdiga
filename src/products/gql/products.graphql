@@ -34,7 +34,7 @@ input CreateProductPriceInput {
   currentPrice: Float!
   originalPrice: Float!
   priceDifference: Float!
-  isOnDiscount: Boolean
+  isOnDiscount: Boolean!
   discountPercentage: Float!
 }
 
