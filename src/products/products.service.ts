@@ -1,9 +1,4 @@
-import {
-  ConsoleLogger,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -15,12 +10,15 @@ import { Product } from 'src/graphql/graphql-schema';
 import { ScraperService } from 'src/scraper/scraper.service';
 import { ENTITIES_KEY } from 'src/shared';
 import * as _ from 'lodash';
+import { ThirdPartyEmailService } from 'src/third-party/third-party.service';
+
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(ENTITIES_KEY.PRODUCTS_MODEL)
     private productModel: Model<Product>,
     private scraperService: ScraperService,
+    private readonly sendgridService: ThirdPartyEmailService,
   ) {}
 
   async createProduct(productUrl: string): Promise<Product> {
@@ -134,6 +132,10 @@ export class ProductsService {
     ) {
       return await this.getPrices(url);
     }
+
+    const { ean, name, prices } = _.head(product);
+
+    this.sendgridService.send(ean, name, url, _.head(prices));
 
     return _.head(product);
   }

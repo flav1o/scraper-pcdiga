@@ -29,6 +29,7 @@ export interface CreateProductPriceInput {
 export interface ProductAutoSearch {
     isActive: boolean;
     url: string;
+    hash: string;
 }
 
 export interface IMutation {

@@ -1,0 +1,3 @@
+APP_SEND_GRID_API_KEY=api_key
+APP_SEND_GRID_MY_EMAIL=email_that_will_recieve_the_data
+APP_SEND_GRID_FROM_EMAIL=email_that_will_send_the_data
