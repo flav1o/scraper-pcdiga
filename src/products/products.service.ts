@@ -124,7 +124,7 @@ export class ProductsService {
       ])
       .exec();
 
-    if (product.length === 0) return await this.createProduct(url);
+    if (!product.length) return await this.createProduct(url);
 
     if (
       isOlderThan24Hours(_.head(product).updatedAt) &&
