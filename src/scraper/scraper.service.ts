@@ -1,54 +1,55 @@
-import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
-import { transformPricesToNumber } from 'src/common/utils';
+import { Injectable } from '@nestjs/common';
+import {
+  calculateDiscount,
+  removeKeywordFromEan,
+  transformPricesToNumber,
+} from 'src/common/utils';
+import { USER_AGENTS } from 'src/constants/scraper.constants';
 
 @Injectable()
 export class ScraperService {
   async pageScraping(pageUrl: string) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: false,
+    });
     const page = await browser.newPage();
-    await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-    );
+    await page.setUserAgent(USER_AGENTS);
     await page.goto(pageUrl, { waitUntil: 'networkidle2' });
 
     const data = await page.evaluate(() => {
-      const currentPrice: HTMLElement = document.querySelector(
-        '.product-info-main .price-box span[data-price-type=finalPrice] .price',
-      );
-
-      const originalPrice: HTMLElement = document.querySelector(
-        '.product-info-main .price-box span[data-price-type=oldPrice] .price',
-      );
-
-      const priceDifference: HTMLElement =
-        document.querySelector('.discount_value');
-
-      const name: HTMLElement = document.querySelector(
-        '#maincontent > div.columns > div > div.product-info-main > div.page-title-wrapper.product > h1 > span',
-      );
-
-      const ean: HTMLElement = document.querySelector(
-        '#maincontent > div.columns > div > div.product.attribute-header > div.product.attribute-wrapper > div.product.attribute.ean > div',
-      );
+      const name = document.querySelector('h1')?.textContent || 'NOT FOUND';
+      const currentPrice =
+        document.querySelector(
+          '#body-overlay > div.z-1.flex.flex-col.justify-between.min-h-screen > div.z-1.base-container.py-5.bg-background.pb-28.flex-grow > main > div.grid.lg\\:grid-cols-product-page.gap-x-6.w-full.items-start > div.max-w-full.min-w-full.mt-6 > div.p-4.bg-background-off.rounded-md.grid.gap-y-4 > div:nth-child(4) > div > div > div.flex.gap-x-4.items-center > div.text-primary.text-2xl.md\\:text-3xl.font-black',
+        )?.textContent || 'NOT FOUND';
+      const ean =
+        document.querySelector(
+          '#body-overlay > div.z-1.flex.flex-col.justify-between.min-h-screen > div.z-1.base-container.py-5.bg-background.pb-28.flex-grow > main > div.grid.lg\\:grid-cols-product-page.gap-x-6.w-full.items-start > div.max-w-full.min-w-full.mt-6 > div.p-4.bg-background-off.rounded-md.grid.gap-y-4 > div.contents.lg\\:hidden > div.w-full.h-full > div > div:nth-child(3)',
+        )?.textContent || 'NOT FOUND';
+      const originalPrice =
+        document.querySelector(
+          '#body-overlay > div.z-1.flex.flex-col.justify-between.min-h-screen > div.z-1.base-container.py-5.bg-background.pb-28.flex-grow > main > div.grid.lg\\:grid-cols-product-page.gap-x-6.w-full.items-start > div.max-w-full.min-w-full.mt-6 > div.p-4.bg-background-off.rounded-md.grid.gap-y-4 > div:nth-child(4) > div > div > div.flex.gap-x-4.items-center > div.pvpr-lh.undefined.flex.flex-col.justify-end.self-end > p',
+        )?.textContent || 'NOT FOUND';
 
       return {
-        currentPrice: currentPrice ? currentPrice.innerText : null,
-        originalPrice: originalPrice
-          ? originalPrice.innerText
-          : currentPrice.innerText,
-        priceDifference: priceDifference ? priceDifference.innerText : '0',
-        name: name.innerText,
-        ean: ean.innerText,
+        name,
+        ean,
+        currentPrice,
+        originalPrice,
       };
     });
 
     await browser.close();
+
+    const { name, ean, currentPrice, originalPrice } = data;
+
     return {
-      ...data,
-      currentPrice: transformPricesToNumber(data.currentPrice),
-      originalPrice: transformPricesToNumber(data.originalPrice),
-      priceDifference: transformPricesToNumber(data.priceDifference),
+      name,
+      ean: removeKeywordFromEan(ean),
+      currentPrice: transformPricesToNumber(currentPrice),
+      originalPrice: transformPricesToNumber(originalPrice),
+      priceDifference: calculateDiscount(originalPrice, currentPrice),
     };
   }
 }

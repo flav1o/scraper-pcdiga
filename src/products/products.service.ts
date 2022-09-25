@@ -1,16 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import * as _ from 'lodash';
 import { Model } from 'mongoose';
+import { ENTITIES_KEY } from 'src/shared';
+import { InjectModel } from '@nestjs/mongoose';
+import { Product } from 'src/graphql/graphql-schema';
+import { ScraperService } from 'src/scraper/scraper.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ThirdPartyEmailService } from 'src/third-party/third-party.service';
 import {
   calculateDiscountPercentage,
   isCurrentMonthAndYear,
   isOlderThan24Hours,
 } from 'src/common/utils';
-import { Product } from 'src/graphql/graphql-schema';
-import { ScraperService } from 'src/scraper/scraper.service';
-import { ENTITIES_KEY } from 'src/shared';
-import * as _ from 'lodash';
-import { ThirdPartyEmailService } from 'src/third-party/third-party.service';
 
 @Injectable()
 export class ProductsService {
@@ -27,22 +27,28 @@ export class ProductsService {
 
     if (!currentPrice)
       throw new HttpException(
-        'ERROR.COULDNT_CREATE_PRODUCT',
+        'ERROR.COULD_NOT_CREATE_PRODUCT',
         HttpStatus.NOT_FOUND,
       );
 
+    const verifiedOriginalPrice =
+      priceDifference > 0 ? originalPrice : currentPrice;
+
+    const verifiedPriceDifference = priceDifference > 0 ? priceDifference : 0;
+
     return await new this.productModel({
-      url: productUrl,
       name,
       ean,
+      url: productUrl,
       prices: {
         currentPrice,
-        originalPrice,
-        priceDifference,
+        originalPrice: verifiedOriginalPrice,
+        priceDifference: verifiedPriceDifference,
         isOnDiscount: priceDifference > 0,
-        discountPercentage: ((priceDifference / originalPrice) * 100).toFixed(
-          2,
-        ),
+        discountPercentage: (
+          (verifiedPriceDifference / verifiedOriginalPrice) *
+          100
+        ).toFixed(2),
       },
     }).save();
   }
@@ -135,7 +141,7 @@ export class ProductsService {
 
     const { ean, name, prices } = _.head(product);
 
-    this.sendgridService.send(ean, name, url, _.head(prices));
+    // this.sendgridService.send(ean, name, url, _.head(prices));
 
     return _.head(product);
   }
