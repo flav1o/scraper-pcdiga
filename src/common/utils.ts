@@ -18,3 +18,17 @@ export const isCurrentMonthAndYear = (lastUpdateDate: Date): boolean => {
     lastUpdateDate.getFullYear() === new Date().getFullYear()
   );
 };
+
+export const calculateDiscount = (
+  priceDifference: string,
+  originalPrice: string,
+): number => {
+  const original = transformPricesToNumber(originalPrice);
+  const current = transformPricesToNumber(priceDifference);
+  return current - original;
+};
+
+export const removeKeywordFromEan = (ean: string): string => {
+  //remove "Código EAN:" from the ean with regex
+  return ean.replace(/Código EAN:\s/, '');
+};
