@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import { ENTITIES_KEY } from 'src/shared';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from 'src/graphql/graphql-schema';
+import { aggregateProductData } from './products.utils';
 import { ScraperService } from 'src/scraper/scraper.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ThirdPartyEmailService } from 'src/third-party/third-party.service';
@@ -16,8 +17,8 @@ import {
 export class ProductsService {
   constructor(
     @InjectModel(ENTITIES_KEY.PRODUCTS_MODEL)
-    private productModel: Model<Product>,
-    private scraperService: ScraperService,
+    private readonly productModel: Model<Product>,
+    private readonly scraperService: ScraperService,
     private readonly sendgridService: ThirdPartyEmailService,
   ) {}
 
@@ -85,50 +86,13 @@ export class ProductsService {
   }
 
   async getProduct(url: string, date: string): Promise<Product> {
-    let priceDate;
+    const priceDate = date ? new Date(date) : new Date();
 
-    date ? (priceDate = new Date(date)) : (priceDate = new Date());
-
-    const product = await this.productModel
-      .aggregate([
-        {
-          $match: {
-            url,
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            url: 1,
-            name: 1,
-            ean: 1,
-            updatedAt: 1,
-            prices: {
-              $filter: {
-                input: '$prices',
-                as: 'price',
-                cond: {
-                  $and: [
-                    {
-                      $eq: [
-                        { $month: '$$price.createdAt' },
-                        priceDate.getMonth() + 1,
-                      ],
-                    },
-                    {
-                      $eq: [
-                        { $year: '$$price.createdAt' },
-                        priceDate.getFullYear(),
-                      ],
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      ])
-      .exec();
+    const product = await aggregateProductData(
+      this.productModel,
+      url,
+      priceDate,
+    );
 
     if (!product.length) return await this.createProduct(url);
 
