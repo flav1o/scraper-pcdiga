@@ -3,6 +3,7 @@ type Product {
   ean: String!
   name: String!
   url: String!
+  productImage: String!
   prices: [ProductPrice]
   updatedAt: String!
   createdAt: String!
@@ -39,5 +40,5 @@ input CreateProductPriceInput {
 }
 
 type Query {
-  getProduct(url: String!, priceDate: String): Product!
+  getProduct(url: String!, notifyMe: Boolean!, priceDate: String): Product!
 }

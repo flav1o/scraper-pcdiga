@@ -29,6 +29,5 @@ export const calculateDiscount = (
 };
 
 export const removeKeywordFromEan = (ean: string): string => {
-  //remove "Código EAN:" from the ean with regex
   return ean.replace(/Código EAN:\s/, '');
 };
