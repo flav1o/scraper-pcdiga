@@ -15,6 +15,7 @@ export const aggregateProductData = async (
           _id: 1,
           url: 1,
           name: 1,
+          productImage: 1,
           ean: 1,
           updatedAt: 1,
           prices: {
@@ -39,6 +40,28 @@ export const aggregateProductData = async (
               },
             },
           },
+        },
+      },
+      {
+        $unwind: {
+          path: '$prices',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $sort: {
+          'prices.createdAt': -1,
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          productImage: { $first: '$productImage' },
+          url: { $first: '$url' },
+          name: { $first: '$name' },
+          ean: { $first: '$ean' },
+          updatedAt: { $first: '$updatedAt' },
+          prices: { $push: '$prices' },
         },
       },
     ])

@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import * as SendGrid from '@sendgrid/mail';
-import { ENV_VARIABLES } from 'src/config/env';
-import { ProductPrice } from 'src/graphql/graphql-schema';
-import scrapedNowEmail from './emails/scraped-now';
 import * as _ from 'lodash';
+import * as SendGrid from '@sendgrid/mail';
+import { Injectable } from '@nestjs/common';
+import { ENV_VARIABLES } from 'src/config/env';
+import { OnEvent } from '@nestjs/event-emitter';
+import scrapedNowEmail from './emails/scraped-now';
+import { EMITTERS } from 'src/constants/emitters.constants';
+import { ICreatedProductEmitterPayload, IProductPrices } from 'src/shared';
 
 @Injectable()
 export class ThirdPartyEmailService {
@@ -11,11 +13,11 @@ export class ThirdPartyEmailService {
     SendGrid.setApiKey(ENV_VARIABLES.APP_SEND_GRID_API);
   }
 
-  async send(ean: string, name: string, url: string, prices: ProductPrice) {
+  async send(ean: string, name: string, url: string, prices: IProductPrices) {
     const mail: SendGrid.MailDataRequired = {
-      to: process.env.APP_SEND_GRID_MY_EMAIL,
+      to: 'flaviodancosta07@gmail.com',
       subject: `Scraped product - ${name}`,
-      from: process.env.APP_SEND_GRID_FROM_EMAIL,
+      from: 'flaviodancosta07@gmail.com',
       text: `The product ${ean} was scraped at ${new Date().toISOString()}`,
       html: scrapedNowEmail(
         name,
@@ -25,7 +27,11 @@ export class ThirdPartyEmailService {
       ),
     };
 
-    const transport = await SendGrid.send(mail);
-    return transport;
+    return await SendGrid.send(mail);
+  }
+
+  @OnEvent(EMITTERS['EMAIL.NOTIFY_CREATED_PRODUCT'])
+  handleOrderCreatedEvent(payload: ICreatedProductEmitterPayload) {
+    this.send(payload.ean, payload.name, payload.url, payload.prices);
   }
 }

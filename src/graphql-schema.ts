@@ -41,6 +41,7 @@ export interface Product {
     ean: string;
     name: string;
     url: string;
+    productImage: string;
     prices?: Nullable<Nullable<ProductPrice>[]>;
     updatedAt: string;
     createdAt: string;
@@ -58,7 +59,7 @@ export interface ProductPrice {
 }
 
 export interface IQuery {
-    getProduct(url: string, priceDate?: Nullable<string>): Product | Promise<Product>;
+    getProduct(url: string, notifyMe: boolean, priceDate?: Nullable<string>): Product | Promise<Product>;
 }
 
 type Nullable<T> = T | null;

@@ -32,20 +32,29 @@ export class ScraperService {
           '#body-overlay > div.z-1.flex.flex-col.justify-between.min-h-screen > div.z-1.base-container.py-5.bg-background.pb-28.flex-grow > main > div.grid.lg\\:grid-cols-product-page.gap-x-6.w-full.items-start > div.max-w-full.min-w-full.mt-6 > div.p-4.bg-background-off.rounded-md.grid.gap-y-4 > div:nth-child(4) > div > div > div.flex.gap-x-4.items-center > div.pvpr-lh.undefined.flex.flex-col.justify-end.self-end > p',
         )?.textContent || 'NOT FOUND';
 
+      const productImage =
+        document
+          .querySelector(
+            '#body-overlay > div.z-1.flex.flex-col.justify-between.min-h-screen > div.z-1.base-container.py-5.bg-background.pb-28.flex-grow > main > div.grid.lg\\:grid-cols-product-page.gap-x-6.w-full.items-start > div.max-w-full.min-w-full.mt-6 > div.p-4.bg-background-off.rounded-md.grid.gap-y-4 > div.hidden.md\\:block.relative > div.parent-grid-full > div:nth-child(2) > div > div > div > div > div > img',
+          )
+          ?.getAttribute('src') || 'NOT FOUND';
+
       return {
         name,
         ean,
         currentPrice,
         originalPrice,
+        productImage,
       };
     });
 
     await browser.close();
 
-    const { name, ean, currentPrice, originalPrice } = data;
+    const { name, ean, currentPrice, originalPrice, productImage } = data;
 
     return {
       name,
+      productImage,
       ean: removeKeywordFromEan(ean),
       currentPrice: transformPricesToNumber(currentPrice),
       originalPrice: transformPricesToNumber(originalPrice),

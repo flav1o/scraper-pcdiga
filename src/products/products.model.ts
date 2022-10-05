@@ -16,6 +16,7 @@ export const ProductSchema = new mongoose.Schema(
     ean: String,
     name: String,
     url: String,
+    productImage: String,
     prices: [{ type: ProductPriceSchema }],
   },
   { timestamps: true, versionKey: false },
