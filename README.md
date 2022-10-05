@@ -61,7 +61,7 @@ _These are the steps to install and use the scraper_
 
 ## Proof of work
 
-![data](https://cdn.discordapp.com/attachments/946807027462705172/980484074365943818/unknown.png)
+![data](https://cdn.discordapp.com/attachments/941756261555376170/1027272351320113213/unknown.png)
 
 
 ## License
