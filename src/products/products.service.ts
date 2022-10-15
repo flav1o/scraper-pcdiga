@@ -116,4 +116,8 @@ export class ProductsService {
 
     return product;
   }
+
+  async getProductByUrl(productUrl: string): Promise<Product> {
+    return await this.productModel.findOne({ url: productUrl });
+  }
 }

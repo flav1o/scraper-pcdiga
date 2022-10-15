@@ -1,11 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ProductAutoSearch } from 'src/graphql/graphql-schema';
-import { ENTITIES_KEY } from 'src/shared';
-import { Cron } from '@nestjs/schedule';
 import { v4 as uuid } from 'uuid';
+import { Cron } from '@nestjs/schedule';
+import { ENTITIES_KEY } from 'src/shared';
+import { InjectModel } from '@nestjs/mongoose';
+import { ProductAutoSearch } from 'src/graphql/graphql-schema';
 import { ProductsService } from 'src/products/products.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { findProductsToSearch } from './autosearch.utils';
 
 @Injectable()
 export class AutosearchService {
@@ -34,12 +35,15 @@ export class AutosearchService {
     }).save());
   }
 
-  @Cron('0 0 * * * *')
+  @Cron('0 0 0 * * *')
   async autoSearch() {
-    /*
-    TODO: search and update products 
-    in auto searchcollection with 
-    isActive: true
-    */
+    const productsToSearch = await findProductsToSearch(this.autoSearchModel);
+
+    for (const product of productsToSearch) {
+      await this.productService.getProduct(
+        product.url,
+        new Date().toISOString(),
+      );
+    }
   }
 }
