@@ -60,6 +60,7 @@ export interface ProductPrice {
 
 export interface IQuery {
     getProduct(url: string, notifyMe: boolean, priceDate?: Nullable<string>): Product | Promise<Product>;
+    scrapeAllSaved(): Product | Promise<Product>;
 }
 
 type Nullable<T> = T | null;
