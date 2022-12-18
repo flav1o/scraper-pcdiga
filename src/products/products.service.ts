@@ -43,42 +43,30 @@ export class ProductsService {
   }
 
   async createProduct(productUrl: string): Promise<Product> {
-    const {
-      currentPrice,
-      originalPrice,
-      priceDifference,
+    const { currentPrice, name, ean, productImage } =
+      await this.scraperService.pageScraping(productUrl);
+
+    if (!currentPrice)
+      throw new HttpException(
+        'ERROR.COULD_NOT_CREATE_PRODUCT',
+        HttpStatus.CONFLICT,
+      );
+
+    const createProduct = await new this.productModel({
       name,
       ean,
       productImage,
-    } = await this.scraperService.pageScraping(productUrl);
+      url: productUrl,
+      prices: [],
+    }).save();
 
-    if (!currentPrice)
+    if (!createProduct)
       throw new HttpException(
         'ERROR.COULD_NOT_CREATE_PRODUCT',
         HttpStatus.NOT_FOUND,
       );
 
-    const verifiedOriginalPrice =
-      priceDifference > 0 ? originalPrice : currentPrice;
-
-    const verifiedPriceDifference = priceDifference > 0 ? priceDifference : 0;
-
-    return await new this.productModel({
-      name,
-      ean,
-      productImage,
-      url: productUrl,
-      prices: {
-        currentPrice,
-        originalPrice: verifiedOriginalPrice,
-        priceDifference: verifiedPriceDifference,
-        isOnDiscount: priceDifference > 0,
-        discountPercentage: calculateDiscountPercentage(
-          verifiedPriceDifference,
-          verifiedOriginalPrice,
-        ),
-      },
-    }).save();
+    return createProduct;
   }
 
   async createPrice(productUrl: string): Promise<Product> {
@@ -105,10 +93,10 @@ export class ProductsService {
             originalPrice: verifiedOriginalPrice,
             priceDifference: verifiedPriceDifference,
             isOnDiscount: priceDifference > 0,
-            discountPercentage: (
-              (verifiedPriceDifference / verifiedOriginalPrice) *
-              100
-            ).toFixed(2),
+            discountPercentage: calculateDiscountPercentage(
+              verifiedPriceDifference,
+              verifiedOriginalPrice,
+            ),
           },
         },
       },
