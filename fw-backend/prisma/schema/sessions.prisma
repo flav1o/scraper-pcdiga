@@ -1,0 +1,10 @@
+model Session {
+    sessionId String          @id @default(uuid()) @map("session_id")
+    userId    String          @map("user_id")
+    createdAt DateTime        @default(now()) @map("created_at")
+    visits    SessionVisits[]
+
+    user User? @relation(fields: [userId], references: [userId])
+
+    @@map("sessions")
+}

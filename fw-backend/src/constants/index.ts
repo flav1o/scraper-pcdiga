@@ -1,0 +1,1 @@
+export const SCRAPING_TIME_THRESHOLD_HOURS = 12;

@@ -1,0 +1,15 @@
+model User {
+  userId     String   @id @default(uuid()) @map("user_id")
+  name       String?
+  email      String   @unique
+  password   String
+  socialAuth Boolean  @default(false) @map("social_auth")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  Price Price[]
+  Session Session[]
+
+  @@map("users")
+  OnWatch OnWatch[]
+}

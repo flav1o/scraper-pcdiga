@@ -1,0 +1,5 @@
+pika
+playwright
+asyncio
+hmac
+python-dotenv

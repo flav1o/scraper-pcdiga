@@ -1,0 +1,15 @@
+model Product {
+    productId     String   @id @default(uuid()) @map("product_id")
+    ean           String   @unique
+    name          String
+    image         String
+    lastScrapedAt DateTime @default(now()) @map("last_scraped_at")
+    createdAt     DateTime @default(now()) @map("created_at")
+    url           String
+
+    prices        Price[]
+    sessionVisits SessionVisits[]
+
+    @@map("products")
+    OnWatch OnWatch[]
+}

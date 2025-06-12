@@ -1,0 +1,13 @@
+model OnWatch {
+    watchId     String   @id @default(uuid()) @map("watch_id")
+    productId   String   @map("product_id")
+    userId      String   @map("user_id")
+    targetPrice Decimal? @map("target_price")
+    createdAt   DateTime @default(now()) @map("created_at")
+
+    product Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+    @@unique([productId, userId])
+    @@map("on_watch")
+}

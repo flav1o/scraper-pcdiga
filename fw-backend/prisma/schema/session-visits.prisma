@@ -1,0 +1,11 @@
+model SessionVisits {
+    visitId   String   @id @default(uuid()) @map("visit_id")
+    sessionId String   @default(uuid()) @map("session_id")
+    productId String   @map("product_id")
+    viewedAt  DateTime @default(now()) @map("viewed_at")
+
+    session Session @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
+
+    @@map("session_details")
+}

@@ -1,0 +1,21 @@
+enum Store {
+    PC_DIGA
+}
+
+model Price {
+    priceId       String   @id @default(uuid()) @map("price_id")
+    productId     String   @map("product_id")
+    createdAt     DateTime @default(now()) @map("created_at")
+    originalPrice Decimal  @map("original_price")
+    discountPrice Decimal? @map("discount_price")
+    hasDiscount   Boolean  @default(false) @map("has_discount")
+    scrapedById   String   @map("scraped_by_id")
+    checksum      String   @map("checksum")
+    store         Store    @default(PC_DIGA)
+
+
+    product Product @relation(fields: [productId], references: [productId])
+    user    User    @relation(fields: [scrapedById], references: [userId])
+
+    @@map("prices")
+}

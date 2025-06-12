@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Fox Watch",
+  "version": "1.0",
+  "description": "Fox Watch is an extension that scrapes product information when you visit specific websites. After that we aggregate the prices and tell you if it's a good time to buy what you are looking for!",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "fox-logo.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "run_at": "document_idle",
+      "type": "module"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["scripting", "activeTab", "storage", "tabs"]
+}
