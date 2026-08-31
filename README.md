@@ -1,3 +1,5 @@
+
+
 [![Stargazers][stars-shield]][stars-url]
 ![MIT License][license-shield]
 [![LinkedIn][linkedin-shield]][linkedin-url]
@@ -59,12 +61,12 @@ python main.py
 ### 6. Build and Load the Chrome Extension
 
 ```bash
-cd extension
+cd addon
 npm install
 npm run build
 ```
 
-Then go to `chrome://extensions`, enable Developer Mode, and load the `extension/dist` folder.
+Then go to `chrome://extensions`, enable Developer Mode, and load the `addon/dist` folder.
 
 ## 📬 Notifications
 
